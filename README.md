@@ -51,6 +51,12 @@ assert error < 1E-14
 df.File('nn.pvd') << fh_mine
 ```
 
+And viola
+
+  <p align="center">
+    <img src="https://github.com/MiroK/fem-nets/blob/master/docs/nn.png">
+  </p>
+
 For more functionality see [tests](https://github.com/MiroK/fem-nets/blob/master/test/test_lagrange1.py#L36).
 
 ## TODO
