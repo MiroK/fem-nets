@@ -7,7 +7,14 @@ whose weights are the coefficient vectors (as ordered in FEniCS)
 ## Dependencies
 - `FEniCS` (2019.1.0 and higher) stack
 - `pytorch`
-- [`gmshnics`]() for some tests
+- [`gmshnics`](https://github.com/MiroK/gmshnics) for some tests
+
+## Usage
+See [tests](https://github.com/MiroK/fem-nets/blob/master/test/test_lagrange1.py#L36) for example
 
 ## TODO
--[] XXXX
+- [ ] Suport for 1, 2, 3 d
+- [ ] Support for Discontinuous Lagrange
+- [ ] Support for higher order
+- [ ] Tensor values spaces (symmetric and skew because why not)
+- [ ] convenience functions `to_nn(V)` where `V` is a function space
