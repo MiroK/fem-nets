@@ -1,5 +1,5 @@
 # Continuous Lagrange networks
-from fem_nets.vandermonde.vandermonde_DG import compute_vandermonde_DG1, compute_vandermonde_DG0
+from fem_nets.vandermonde import compute_vandermonde_DG1, compute_vandermonde_DG0
 from fem_nets.networks.base import ScalarNN , VectorNN
 
 

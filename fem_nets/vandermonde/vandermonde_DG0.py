@@ -3,7 +3,7 @@ import numpy as np
 import torch
 
 
-def compute_vandermonde_CG1(x, mesh, tol_=1E-13):
+def compute_vandermonde_DG0(x, mesh, tol_=1E-13):
     '''Vandermonde matrix has in colums values of basis functions at x'''
     batchdim, npts, gdim = x.shape
     assert batchdim == 1
@@ -13,7 +13,7 @@ def compute_vandermonde_CG1(x, mesh, tol_=1E-13):
     assert gdim == mesh.geometry().dim()
     assert mesh.topology().dim() == gdim
 
-    V = df.FunctionSpace(mesh, 'CG', 1)
+    V = df.FunctionSpace(mesh, 'DG', 0)
     dm = V.dofmap()
 
     ndofs = V.dim()
@@ -52,11 +52,7 @@ def compute_vandermonde_CG1(x, mesh, tol_=1E-13):
         
         is_inside = torch.logical_and(is_inside, ~x_has_contributed)
         for (ldof, dof) in enumerate(cell_dofs):
-            if ldof < gdim:
-                val = y[..., ldof]
-            else:
-                val = 1 - sum_y
-            out[is_inside] = val.reshape(-1)[is_inside]
+            out[is_inside] = 1.
             vandermonde[..., dof] += 1*out
             out *= 0
         x_has_contributed[is_inside] = True
