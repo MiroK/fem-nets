@@ -52,18 +52,23 @@ assert error < 1E-14
 df.File('nn.pvd') << fh_mine
 ```
 
-And viola
+And voila
 
   <p align="center">
     <img src="https://github.com/MiroK/fem-nets/blob/master/docs/nn.png">
   </p>
 
-For more functionality see [tests](https://github.com/MiroK/fem-nets/blob/master/test/test_lagrange1.py#L36).
+For more functionality, such as computation of derivatives see [tests](https://github.com/MiroK/fem-nets/blob/master/test/test_lagrange1.py#L36).
 
 ## TODO
 - [x] Suport for 1, 2, 3 d
 - [x] Support for Discontinuous Lagrange
-- [ ] Support for higher order
-- [ ] Tensor values spaces (symmetric and skew because why not)
 - [x] Convenience functions `to_torch(V)` where `V` is a function space
+----------------------------------------------------------------------
 - [ ] Example with training a hybrid model
+----------------------------------------------------------------------
+- [ ] Support for higher order `CG|DG_2`
+- [ ] Support for `CG_1`
+- [ ] Support for `RT_1`
+----------------------------------------------------------------------
+- [ ] Isolate FEniCS bits `F(G(Omega_hat; theta_G); theta_F): R2 -> R1` 
