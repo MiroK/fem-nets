@@ -14,7 +14,7 @@ Basic idea (taken from [`examples/compate_plot.py`](https://github.com/MiroK/fem
 
 ```python
 import torch
-from fem_nets.networks import VectorLagrange1NN
+import fem_nets
 import dolfin as df
 import numpy as np
 import gmshnics
@@ -25,7 +25,7 @@ V = df.VectorFunctionSpace(mesh, 'CG', 1)
 f = df.Expression(('x[0]-2*x[1]', '2*x[0]+3*x[1]'), degree=1)
 fh = df.interpolate(f, V)
 
-nn = VectorLagrange1NN(mesh)
+nn = fem_nets.to_torch(V)
 nn.double()
 nn.set_from_coefficients(fh.vector().get_local())
 
@@ -48,6 +48,7 @@ df.assign(fh_mine, [fh_x, fh_y])
 
 error = df.sqrt(df.assemble(df.inner(fh_true - fh_mine, fh_true - fh_mine)*df.dx))
 assert error < 1E-14
+# Now you can just plot the two for example
 df.File('nn.pvd') << fh_mine
 ```
 
@@ -60,8 +61,9 @@ And viola
 For more functionality see [tests](https://github.com/MiroK/fem-nets/blob/master/test/test_lagrange1.py#L36).
 
 ## TODO
-- [ ] Suport for 1, 2, 3 d
-- [ ] Support for Discontinuous Lagrange
+- [x] Suport for 1, 2, 3 d
+- [x] Support for Discontinuous Lagrange
 - [ ] Support for higher order
 - [ ] Tensor values spaces (symmetric and skew because why not)
-- [ ] convenience functions `to_nn(V)` where `V` is a function space
+- [x] Convenience functions `to_torch(V)` where `V` is a function space
+- [ ] Example with training a hybrid model

@@ -5,7 +5,7 @@ import numpy as np
 def dof_coordinates(V):
     '''Spatial points associated with dofs'''
     gdim = V.mesh().geometry().dim()
-    return np.array(V.tabulate_dof_coordinates()).reshape(-1, gdim)
+    return V.tabulate_dof_coordinates()
 
 
 def cell_centers(V):
@@ -41,3 +41,21 @@ def random_inside_points(V, npts=100):
 
     mask = mask_inside_points(mesh, pts)
     return pts[mask]
+
+
+def quadrature_points(V):
+    '''Quadrature points to ingerate functions in V exactly'''
+    deg = V.ufl_element().degree()
+    mesh = V.mesh()
+    
+    Velm = df.FiniteElement('Quadrature', mesh.ufl_cell(), deg, quad_scheme='default')
+    V = df.FunctionSpace(mesh, Velm)
+    return V.tabulate_dof_coordinates()
+
+#  -------------------------------------------------------------------
+
+if __name__ == '__main__':
+    mesh = df.UnitSquareMesh(3, 3)
+    V = df.FunctionSpace(mesh, 'CG', 1)
+
+    X = quadrature_points(V)

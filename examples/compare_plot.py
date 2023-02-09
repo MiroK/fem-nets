@@ -1,5 +1,5 @@
 import torch
-from fem_nets.networks import VectorLagrange1NN
+import fem_nets
 import dolfin as df
 import numpy as np
 import gmshnics
@@ -10,7 +10,7 @@ V = df.VectorFunctionSpace(mesh, 'CG', 1)
 f = df.Expression(('x[0]-2*x[1]', '2*x[0]+3*x[1]'), degree=1)
 fh = df.interpolate(f, V)
 
-nn = VectorLagrange1NN(mesh)
+nn = fem_nets.to_torch(V)
 nn.double()
 nn.set_from_coefficients(fh.vector().get_local())
 

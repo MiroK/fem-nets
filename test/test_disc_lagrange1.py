@@ -1,5 +1,5 @@
-from fem_nets.networks import LagrangeNN
-from fem_nets.utils import cell_centers, dof_coordinates, random_inside_points
+from fem_nets.networks import DiscLagrangeNN
+from fem_nets.utils import cell_centers, quadrature_points
 from fem_nets.calculus import grad
 
 import dolfin as df
@@ -23,15 +23,15 @@ except ImportError:
 
 @pytest.mark.parametrize('mesh', meshes)
 @pytest.mark.parametrize('f', (df.Constant(1), df.Expression('2*x[0]-3*x[1]', degree=1), ))
-@pytest.mark.parametrize('get_points', (cell_centers, dof_coordinates, random_inside_points))
-def test_value(mesh, f, get_points):
+@pytest.mark.parametrize('get_points', (cell_centers, quadrature_points))
+def test_value_linear(mesh, f, get_points):
     '''Use cell centers as points for comparison'''
-    V = df.FunctionSpace(mesh, 'CG', 1)
+    V = df.FunctionSpace(mesh, 'DG', 1)
     fh = df.interpolate(f, V)
 
     coefs = fh.vector().get_local()
 
-    nn = LagrangeNN(V)
+    nn = DiscLagrangeNN(V)
     nn.double()
     nn.set_from_coefficients(coefs)
 
@@ -46,17 +46,17 @@ def test_value(mesh, f, get_points):
 
 
 @pytest.mark.parametrize('mesh', meshes)
-@pytest.mark.parametrize('get_points', (cell_centers, dof_coordinates, random_inside_points))
-def test_gradient(mesh, get_points):
+@pytest.mark.parametrize('get_points', (cell_centers, quadrature_points))
+def test_gradient_linear(mesh, get_points):
     '''Use cell centers as points for comparison'''
-    V = df.FunctionSpace(mesh, 'CG', 1)
+    V = df.FunctionSpace(mesh, 'DG', 1)
 
     f = df.Expression('2*x[0]-3*x[1]', degree=1)
     fh = df.interpolate(f, V)
 
     coefs = fh.vector().get_local()
 
-    nn = LagrangeNN(V)
+    nn = DiscLagrangeNN(V)
     nn.double()
     nn.set_from_coefficients(coefs)
 

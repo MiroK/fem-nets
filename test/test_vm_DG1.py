@@ -1,5 +1,5 @@
-from fem_nets.vandermonde import compute_vandermonde_CG1
-from fem_nets.utils import cell_centers, dof_coordinates, random_inside_points
+from fem_nets.vandermonde import compute_vandermonde_DG1
+from fem_nets.utils import cell_centers, dof_coordinates, random_inside_points, quadrature_points
 
 import dolfin as df
 import torch
@@ -22,17 +22,17 @@ except ImportError:
 
 @pytest.mark.parametrize('mesh', meshes)
 @pytest.mark.parametrize('f', (df.Constant(1), df.Expression('2*x[0]-3*x[1]', degree=1), ))
-@pytest.mark.parametrize('get_points', (cell_centers, dof_coordinates, random_inside_points))
+@pytest.mark.parametrize('get_points', (cell_centers, ))
 def test_vm_2d(mesh, f, get_points):
     '''Use cell centers as points for comparison'''
-    V = df.FunctionSpace(mesh, 'CG', 1)
+    V = df.FunctionSpace(mesh, 'DG', 1)
     fh = df.interpolate(f, V)
 
     coefs = fh.vector().get_local()
 
     x_ = get_points(V)
     x = torch.tensor(x_).reshape((1, ) + x_.shape)
-    vandermonde = compute_vandermonde_CG1(x, mesh)
+    vandermonde = compute_vandermonde_DG1(x, mesh)
 
     # Pushing this through linear layer with coefs behaves as eval of f at x
     lin = nn.Linear(V.dim(), 1, bias=False)
@@ -48,17 +48,17 @@ def test_vm_2d(mesh, f, get_points):
     
 @pytest.mark.parametrize('mesh', (df.UnitCubeMesh(3, 3, 3), ))
 @pytest.mark.parametrize('f', (df.Constant(1), df.Expression('2*x[0]-3*x[1]+x[2]', degree=1), ))
-@pytest.mark.parametrize('get_points', (cell_centers, dof_coordinates, random_inside_points))
+@pytest.mark.parametrize('get_points', (cell_centers, dof_coordinates, quadrature_points))
 def test_vm_3d(mesh, f, get_points):
     '''Use cell centers as points for comparison'''
-    V = df.FunctionSpace(mesh, 'CG', 1)
+    V = df.FunctionSpace(mesh, 'DG', 1)
     fh = df.interpolate(f, V)
 
     coefs = fh.vector().get_local()
 
     x_ = get_points(V)
     x = torch.tensor(x_).reshape((1, ) + x_.shape)
-    vandermonde = compute_vandermonde_CG1(x, mesh)
+    vandermonde = compute_vandermonde_DG1(x, mesh)
 
     # Pushing this through linear layer with coefs behaves as eval of f at x
     lin = nn.Linear(V.dim(), 1, bias=False)
@@ -74,17 +74,17 @@ def test_vm_3d(mesh, f, get_points):
     
 @pytest.mark.parametrize('mesh', (df.UnitIntervalMesh(30), ))
 @pytest.mark.parametrize('f', (df.Constant(1), df.Expression('2*x[0]-1', degree=1), ))
-@pytest.mark.parametrize('get_points', (cell_centers, dof_coordinates, random_inside_points))
+@pytest.mark.parametrize('get_points', (cell_centers, dof_coordinates))
 def test_vm_1d(mesh, f, get_points):
     '''Use cell centers as points for comparison'''
-    V = df.FunctionSpace(mesh, 'CG', 1)
+    V = df.FunctionSpace(mesh, 'DG', 1)
     fh = df.interpolate(f, V)
 
     coefs = fh.vector().get_local()
 
     x_ = get_points(V)
     x = torch.tensor(x_).reshape((1, ) + x_.shape)
-    vandermonde = compute_vandermonde_CG1(x, mesh)
+    vandermonde = compute_vandermonde_DG1(x, mesh)
 
     # Pushing this through linear layer with coefs behaves as eval of f at x
     lin = nn.Linear(V.dim(), 1, bias=False)
@@ -96,3 +96,11 @@ def test_vm_1d(mesh, f, get_points):
     true = torch.tensor(np.array([fh(xi_) for xi_ in x_]))
 
     assert abs(torch.norm(true-mine, np.inf)) < 1E-12
+
+# --------------------------------------------------------------------
+
+if __name__ == '__main__':
+
+    test_vm_1d(mesh=df.UnitIntervalMesh(30),
+               f=df.Constant(2),
+               get_points=cell_centers)

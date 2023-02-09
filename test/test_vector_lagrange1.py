@@ -1,4 +1,4 @@
-from fem_nets.networks import VectorLagrange1NN
+from fem_nets.networks import VectorLagrangeNN
 from fem_nets.utils import cell_centers, dof_coordinates, random_inside_points
 
 import dolfin as df
@@ -30,7 +30,7 @@ def test_value(mesh, f, get_points):
 
     coefs = fh.vector().get_local()
 
-    nn = VectorLagrange1NN(mesh)
+    nn = VectorLagrangeNN(V)
     nn.double()
     nn.set_from_coefficients(coefs)
 
