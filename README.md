@@ -10,7 +10,7 @@ whose weights are the coefficient vectors (as ordered in FEniCS)
 - [`gmshnics`](https://github.com/MiroK/gmshnics) for some tests
 
 ## Usage
-Basic idea (taken from [`examples/compate_plot.py`](https://github.com/MiroK/fem-nets/blob/master/examples/compare_plot.py))
+Basic idea (taken from [`examples/compare_plot.py`](https://github.com/MiroK/fem-nets/blob/master/examples/compare_plot.py))
 
 ```python
 import torch
