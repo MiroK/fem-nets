@@ -1,5 +1,5 @@
 # Continuous Lagrange networks
-from fem_nets.vandermonde.vandermonde_CG1 import compute_vandermonde_CG1
+from fem_nets.vandermonde.vandermonde_CG import compute_vandermonde_CG1
 from fem_nets.networks.base import ScalarNN , VectorNN
 
 
@@ -7,7 +7,10 @@ class LagrangeBase():
     def _compute_vandermonde(self, pdegree):
         return {1: compute_vandermonde_CG1}[pdegree]
 
+    def _is_compatible(self, V):
+        return V.ufl_element().family() == 'Lagrange'
 
+    
 class LagrangeNN(ScalarNN, LagrangeBase):
     '''Neural net that is 'CG1' function space on mesh'''    
     pass

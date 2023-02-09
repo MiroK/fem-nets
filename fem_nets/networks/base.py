@@ -6,6 +6,8 @@ import dolfin as df
 class ScalarNN(nn.Module):
     '''Neural net representation of a scalar valued FE function'''    
     def __init__(self, V, invalidate_cache=True):
+        assert self._is_compatible(V)
+        
         mesh = V.mesh()
         assert mesh.geometry().dim() == mesh.topology().dim()
         assert V.ufl_element().value_shape() == ()
@@ -40,6 +42,8 @@ class ScalarNN(nn.Module):
 class VectorNN(nn.Module):
     '''Neural net representation of vector valued function'''
     def __init__(self, V, invalidate_cache=True):
+        assert self._is_compatible(V)
+        
         mesh = V.mesh()
         assert mesh.geometry().dim() == mesh.topology().dim()
         assert len(V.ufl_element().value_shape()) == 1
