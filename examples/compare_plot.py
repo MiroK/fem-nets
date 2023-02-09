@@ -34,3 +34,4 @@ df.assign(fh_mine, [fh_x, fh_y])
 error = df.sqrt(df.assemble(df.inner(fh_true - fh_mine, fh_true - fh_mine)*df.dx))
 assert error < 1E-14
 # Now you can just plot the two for example
+df.File('nn.pvd') << fh_mine
