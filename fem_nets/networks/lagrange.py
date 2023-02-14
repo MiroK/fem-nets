@@ -1,6 +1,6 @@
 # Continuous Lagrange networks
 from fem_nets.vandermonde import compute_vandermonde_CG1, compute_vandermonde_CG2
-from fem_nets.networks.base import ScalarNN , VectorNN
+from fem_nets.networks.base import ScalarNN, VectorNN
 
 
 class LagrangeBase():

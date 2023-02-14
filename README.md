@@ -109,10 +109,10 @@ For more functionality, such as computation of derivatives see [tests](https://g
 - [x] Support for Discontinuous Lagrange
 - [x] Convenience functions `to_torch(V)` where `V` is a function space
 ----------------------------------------------------------------------
-- [ ] Example with training a hybrid model
+- [x] Example with training a hybrid model
 ----------------------------------------------------------------------
-- [ ] Support for higher order `CG|DG_2`
-- [ ] Support for `CG_1`
+- [x] Support for higher order `CG|DG_2`
+- [ ] Support for `CR_1`
 - [ ] Support for `RT_1`
 ----------------------------------------------------------------------
 - [ ] Isolate FEniCS bits `F(G(Omega_hat; theta_G); theta_F): R2 -> R1` 
