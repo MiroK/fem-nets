@@ -58,6 +58,50 @@ And voila
     <img src="https://github.com/MiroK/fem-nets/blob/master/docs/nn.png">
   </p>
 
+We can combine FE spaces with other neural networks as follows (snippet based on 
+taken from [`examples/compate_plot.py`](https://github.com/MiroK/fem-nets/blob/master/examples/function_fit.py))
+
+```python
+import fem_nets
+import dolfin as df
+import torch
+import torch.optim as optim
+import torch.nn as nn
+import numpy as np
+
+class Network(nn.Module):
+    def __init__(self):
+        super().__init__()
+        # Takes 2d spatial points
+        self.lin1 = nn.Linear(1, 10)
+        self.lin2 = nn.Linear(10, 1)
+ 
+    def forward(self, x):
+        y = self.lin1(x)
+        y = torch.relu(y)
+        y = self.lin2(y)
+        return y
+
+mesh = df.UnitIntervalMesh(7)
+V = df.FunctionSpace(mesh, 'CG', 1)
+
+model_fe = fem_nets.to_torch(V)
+model_fe.double()
+
+model_nn = Network()
+model_nn.double()
+
+params = list(model_fe.parameters()) + list(model_nn.parameters())
+
+model = lambda x: model_fe(x).unsqueeze(2) + model_nn(x)
+```
+
+The complete code then produces something like
+  <p align="center">
+    <img src="https://github.com/MiroK/fem-nets/blob/master/docs/function_fit.png">
+  </p>
+
+
 For more functionality, such as computation of derivatives see [tests](https://github.com/MiroK/fem-nets/blob/master/test/test_lagrange1.py#L36).
 
 ## TODO
