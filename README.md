@@ -72,7 +72,6 @@ import numpy as np
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
-        # Takes 2d spatial points
         self.lin1 = nn.Linear(1, 10)
         self.lin2 = nn.Linear(10, 1)
  
