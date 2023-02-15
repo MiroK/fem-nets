@@ -83,10 +83,10 @@ def quad_weights(V):
     ''''Quad weights for volume integration'''
     mesh = V.mesh()
     gdim = mesh.geometry().dim()
-    cell = FIAT.reference_element.ufc_simplex(gdim)
+    ref_cell = FIAT.reference_element.ufc_simplex(gdim)
 
     deg = V.ufl_element().degree()
-    quadrature = FIAT.quadrature_schemes.make_quadrature(cell, deg)
+    quadrature = FIAT.quadrature_schemes.make_quadrature(ref_cell, deg)
 
     ref_weights = quadrature.get_weights()
     
@@ -96,13 +96,15 @@ def quad_weights(V):
     weights = []
     for cell in df.cells(mesh):
         weights.extend(ref_weights*cell.volume())
-    return 2*np.array(weights)
+    return (1/ref_cell.volume())*np.array(weights)
 
 #  -------------------------------------------------------------------
 
 if __name__ == '__main__':
-    mesh = df.UnitSquareMesh(4, 4)
-    V = df.FunctionSpace(mesh, 'CG', 2)
+    mesh = df.UnitCubeMesh(2, 1, 4)
+    # mesh = df.UnitSquareMesh(2, 1)
+    mesh = df.UnitIntervalMesh(2)    
+    V = df.FunctionSpace(mesh, 'CG', 1)
 
     Xq = quadrature_points(V)
     Yq = quad_points(V)
@@ -110,6 +112,8 @@ if __name__ == '__main__':
     Wq = quad_weights(V)
 
     f = df.Expression('3*x[0]*x[1]-2*x[1]', degree=V.ufl_element().degree())
+    f = df.Expression('3*x[0]', degree=V.ufl_element().degree())
+    
     true = df.assemble(f*df.dx(domain=mesh))
 
     mine = np.inner(Wq, np.fromiter(map(f, Yq), dtype=float))
